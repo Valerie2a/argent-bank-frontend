@@ -22,6 +22,34 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+// Thunk pour récupérer les infos utilisateur après login
+export const fetchUserProfile = createAsyncThunk(
+  "user/fetchUserProfile",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().user.token;
+
+      const response = await fetch("http://localhost:3001/api/v1/user/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(data.message);
+      }
+
+      return data.body;
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Erreur réseau");
+    }
+  }
+);
 // Thunk pour mettre à jour le nom d'utilisateur
 export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
@@ -87,11 +115,26 @@ const userSlice = createSlice ({
         state.loading = false;
         state.error = action.payload;
       })
+      // fetchUserProfile
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userName = action.payload.userName;
+        state.firstName = action.payload.firstName;
+        state.lastName = action.payload.lastName;
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update userprofil
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      // Update userprofil
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.userName = action.payload.userName;

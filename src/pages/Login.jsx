@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/users/userSlice";
+import { loginUser , fetchUserProfile } from "../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -12,15 +12,22 @@ function Login() {
   const { loading, error, token } = useSelector ((state) => state.user);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const resultAction = await dispatch(loginUser({ email, password}));
+  e.preventDefault();
 
-   if (loginUser.fulfilled.match(resultAction)) {
-        navigate("/profile");
-      } else {
-        alert("Échec de la connexion :" + resultAction.payload);
-      }
-    };
+  const resultAction = await dispatch(loginUser({ email, password }));
+
+  if (loginUser.fulfilled.match(resultAction)) {
+    // Attendre que le token soit bien présent avant de faire le fetch
+    const token = resultAction.payload;
+
+    if (token) {
+      await dispatch(fetchUserProfile()); 
+      navigate("/profile");
+    }
+  } else {
+    alert("Échec de la connexion :" + resultAction.payload);
+  }
+};
   return (
     <div>
       <h2>Connexion</h2>

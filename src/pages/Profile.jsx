@@ -1,50 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "../features/users/userSlice";
+import { updateUserProfile, fetchUserProfile } from "../features/users/userSlice";
 
 function Profile() {
   const dispatch = useDispatch();
-  const { firstName, lastName, userName, token, loading, error  } = useSelector ((state) => state.user);
 
-  const [ editMode , setEditMode ]  = useState(false)
-  const [ newUserName, setNewUserName ] = useState ('')
+  // Récupération des données utilisateur depuis le store Redux
+  const { firstName, lastName, userName, token, loading, error } = useSelector(
+    (state) => state.user
+  );
 
+  // État local pour le champ modifiable : userName
+  const [newUserName, setNewUserName] = useState("");
+
+  // Récupération du profil si token présent
   useEffect(() => {
-    setNewUserName(userName || '');
+    if (token) {
+      dispatch(fetchUserProfile(token));
+    }
+  }, [dispatch, token]);
+
+  // Initialisation du champ avec la valeur Redux
+  useEffect(() => {
+    setNewUserName(userName || "");
   }, [userName]);
 
+  // Envoi des modifications
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(updateUserProfile({ userName: newUserName }));
+  };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      dispatch(updateUserProfile({ userName: newUserName})) ;
-      setEditMode(false);
-    };
+  // Réinitialisation du champ lors d'un cancel
+  const handleCancel = (e) => {
+    e.preventDefault();
+    console.log("Cancel triggered");
+    setNewUserName(userName);
+  };
 
-return (
+  return (
     <div className="profile">
-      <h2>Bonjour {firstName} {lastName}</h2>
-
-      {!editMode ? (
-        <>
-          <p>Nom d'utilisateur : <strong>{userName}</strong></p>
-          <button onClick={() => setEditMode(true)}>Modifier le nom d'utilisateur</button>
-        </>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <label>
-            Nouveau nom d'utilisateur :
-            <input
-              type="text"
-              value={newUserName}
-              onChange={(e) => setNewUserName(e.target.value)}
-            />
-          </label>
-          <button type="submit">Enregistrer</button>
-          <button type="button" onClick={() => setEditMode(false)}>Annuler</button>
-        </form>
-      )}
-
-      {loading && <p>Chargement...</p>}
+      <h2>Edit user info</h2>
+      <form onSubmit={handleSubmit} className="edit-form">
+        <div>
+          <label htmlFor="username">User name:</label>
+          <input
+            type="text"
+            id="username"
+            value={newUserName}
+            onChange={(e) => setNewUserName(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="firstName">First name:</label>
+          <input type="text" id="firstName" value={firstName} disabled />
+        </div>
+        <div>
+          <label htmlFor="lastName">Last name:</label>
+          <input type="text" id="lastName" value={lastName} disabled />
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? "Saving..." : "Save"}
+        </button>
+        <button type="button" onClick={handleCancel}>
+          Cancel
+        </button>
+      </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
