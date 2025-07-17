@@ -1,60 +1,65 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser , fetchUserProfile } from "../features/users/userSlice";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginUser, fetchUserProfile } from '../features/users/userSlice'
+import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { loading, error, token } = useSelector ((state) => state.user);
+export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { token, error, loading } = useSelector(state => state.user)
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const resultAction = await dispatch(loginUser({ email, password }));
-
-  if (loginUser.fulfilled.match(resultAction)) {
-    // Attendre que le token soit bien présent avant de faire le fetch
-    const token = resultAction.payload;
-
-    if (token) {
-      await dispatch(fetchUserProfile()); 
-      navigate("/profile");
+    e.preventDefault()
+    const resultAction = await dispatch(loginUser({ email, password }))
+    if (loginUser.fulfilled.match(resultAction)) {
+      await dispatch(fetchUserProfile()) // pour récupérer le userName, etc.
+      navigate('/profile')
     }
-  } else {
-    alert("Échec de la connexion :" + resultAction.payload);
+    // sinon l’erreur est déjà dans `state.user.error`
   }
-};
+
   return (
-    <div>
-      <h2>Connexion</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email :</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Mot de passe :</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-       <button type="submit" disabled={loading}>
-          {loading ? "Connexion..." : "Se connecter"}
-        </button>
-      </form>
-    </div>
-  );
+    <main className="main bg-dark">
+      <section className="sign-in-content">
+        <FontAwesomeIcon icon={faUserCircle} className="sign-in-icon" />
+        <h1>Sign In</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <label htmlFor="email">Username</label>
+            <input
+              type="text"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-wrapper">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-remember">
+            <input type="checkbox" id="remember-me" />
+            <label htmlFor="remember-me">Remember me</label>
+          </div>
+
+          {error && <p className="error-message">{error}</p>}
+
+          <button type="submit" className="sign-in-button" disabled={loading}>
+            {loading ? 'Loading...' : 'Sign In'}
+          </button>
+        </form>
+      </section>
+    </main>
+  )
 }
-
-export default Login;
-

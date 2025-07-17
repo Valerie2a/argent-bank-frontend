@@ -15,10 +15,12 @@ body {
 
 .main {
   flex: 1;
+  width: 100%;
 }
 
 .bg-dark {
   background-color: #12002b;
+  min-width: 100%;
 }
 
 .sr-only {
@@ -214,13 +216,39 @@ body {
   padding: 0;
 }
 
+/*formulaire modification username*/
+.profile {
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.edit-form {
+display: flex;
+flex-direction: column;
+margin : 10px;
+}
+.auth-button {
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px;
+}
+.save, .cancel {
+  border-color: #00bc77;
+  background-color: #00bc77; 
+  color :#fff;
+  margin: 5px;
+  border-radius: 5px;
+  width: 150px;
+}
 .account {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid black;
-  background-color: #fff;
-  width: 80%;
+  background-color: #333;
+  color :#fff;
+  border-radius: 5px;
+  width: 100%;
   margin: 0 auto;
   flex-direction: column;
   padding: 1.5rem;
@@ -250,14 +278,19 @@ body {
   width: 100%;
   flex: 1;
 }
-
-.edit-button {
-  border-color: #00bc77;
-  background-color: #00bc77;
-  color: #fff;
-  font-weight: bold;
-  padding: 10px;
+.chevron-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 2rem;
+  color: #fff; 
 }
+
+.chevron-button:hover {
+  color: #007bff; 
+}
+
 
 .header {
   color: #fff;
@@ -274,6 +307,66 @@ body {
   border-color: #00bc77;
   background-color: #00bc77;
   color: #fff;
+}
+.transaction-table {
+  width: 100%;
+  /*border-collapse:collapse;*/
+  font-size: 1rem;
+  margin-top: 2rem;
+  background-color: white;
+}
+.transaction-detail-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.transaction-table td {
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  color: #2c3e50;
+  background-color: white;
+}
+.transaction-table th,
+.transaction-table td,
+.transaction-detail-card {
+  border: none;
+  font-weight: bold;
+  padding: 12px 15px;
+  text-align: left;
+}
+.transaction-table td, .transaction-detail-card {
+  background-color: #00bc77;
+  color: #ddd;
+  
+}
+.transaction-table th {
+  background-color:#fff ;
+  text-transform:capitalize;
+  color: #2c3e50;
+  font-weight: bold;
+  padding: 12px 15px;
+  border: none;
+}
+
+.edit-col {
+  width: 120px;
+  text-align: center;
+}
+
+.edit-button {
+  background-color: #00bc77;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #019a60;
 }
 
 @media (min-width: 720px) {
