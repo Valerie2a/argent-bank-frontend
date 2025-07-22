@@ -1,8 +1,8 @@
+import React from 'react';
 import "../assets/css/main.css";
-import logo from '../assets/img/argentBankLogo.png'
-import chatIcon from '../assets/img/icon-chat.png'
-import moneyIcon from '../assets/img/icon-money.png'
-import securityIcon from '../assets/img/icon-security.png'
+import chatIcon from '../assets/img/icon-chat.png';
+import moneyIcon from '../assets/img/icon-money.png';
+import securityIcon from '../assets/img/icon-security.png';
 
 function Home() {
   return (
@@ -44,6 +44,7 @@ function Home() {
           </div>
         </section>
       </main>
+      
       <footer className="footer">
         <p className="footer-text">Copyright 2020 Argent Bank</p>
       </footer>

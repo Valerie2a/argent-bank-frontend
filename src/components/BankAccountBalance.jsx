@@ -1,6 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 function BankAccountBalance({ title, amount, description, onToggle }) {
 
@@ -12,13 +10,9 @@ function BankAccountBalance({ title, amount, description, onToggle }) {
         <p className="account-amount-description">{description}</p>
       </div>
       <div className="account-content-wrapper cta">
-        <button
-          onClick={onToggle}
-          className="chevron-button"
-          aria-label="Toggle transaction details"
-        >
-        <FontAwesomeIcon icon={faChevronRight} />
-      </button>
+          <button className="transaction-button" onClick={onToggle}>
+          View transactions
+        </button>
       </div>
     </section>
   );

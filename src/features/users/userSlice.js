@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 // Thunk pour la connexion utilisateur
 export const loginUser = createAsyncThunk(
   "user/loginUser",
@@ -29,12 +30,16 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.token;
+      
+      if (!token) {
+        return thunkAPI.rejectWithValue("Token manquant");
+      }
 
       const response = await fetch("http://localhost:3001/api/v1/user/profile", {
-        method: "POST",
+        method: "POST", 
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -50,18 +55,23 @@ export const fetchUserProfile = createAsyncThunk(
     }
   }
 );
+
 // Thunk pour mettre à jour le nom d'utilisateur
 export const updateUserProfile = createAsyncThunk(
   "user/updateUserProfile",
   async ({ userName }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.token;
+      
+      if (!token) {
+        return thunkAPI.rejectWithValue("Token manquant");
+      }
 
       const response = await fetch("http://localhost:3001/api/v1/user/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({ userName }),
       });
@@ -78,9 +88,10 @@ export const updateUserProfile = createAsyncThunk(
     }
   }
 );
-// Etat initial
+
+// État initial
 const initialState = {
-  token: null,
+  token: localStorage.getItem('token') || null,
   userName: '',
   firstName: '',
   lastName: '',
@@ -89,27 +100,30 @@ const initialState = {
   loading: false,
 };
 
-const userSlice = createSlice ({ 
-     name: "user",
+const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     logout(state) {
+      localStorage.removeItem('token');
       state.token = null;
       state.userName = '';
       state.firstName = '';
       state.lastName = '';
-},
-},
-    extraReducers: (builder) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
     builder
-    // Login
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload; // ici on reçoit le token
+        state.token = action.payload; 
+        localStorage.setItem('token', action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -130,7 +144,7 @@ const userSlice = createSlice ({
         state.loading = false;
         state.error = action.payload;
       })
-      // Update userprofil
+      // Update userProfile
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
