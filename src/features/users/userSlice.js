@@ -89,9 +89,9 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
-// État initial
+// État initial - Token uniquement en mémoire (sécurité bancaire)
 const initialState = {
-  token: localStorage.getItem('token') || null,
+  token: null, // Pas de persistance localStorage pour la sécurité
   userName: '',
   firstName: '',
   lastName: '',
@@ -105,7 +105,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
-      localStorage.removeItem('token');
+      // Reset complet de l'état utilisateur
       state.token = null;
       state.userName = '';
       state.firstName = '';
@@ -122,8 +122,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload; 
-        localStorage.setItem('token', action.payload);
+        state.token = action.payload; // Token uniquement en mémoire Redux
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

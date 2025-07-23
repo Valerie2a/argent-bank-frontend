@@ -77,7 +77,7 @@ function Profile() {
             <h1>
               {userName || firstName ? (
                 <>
-                  Welcome back<br />{userName || firstName}!
+                  Welcome back<br />{userName || firstName} !
                 </>
               ) : (
                "Welcome to Argent Bank!"
