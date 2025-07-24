@@ -45,7 +45,7 @@ export const updateTransaction = createAsyncThunk(
       }
 
       const response = await fetch(`http://localhost:3001/api/v1/transactions/${transactionId}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
