@@ -21,7 +21,7 @@ Vous travaillez avec **Mila**, la cheffe de projet, sur la mise en place du **ta
 - Créer l'application avec **React**
 - Rendre le site **responsive**
 - Gérer les routes avec **React Router**
-- Gérer l'état global avec **Redux Toolkit**
+- Gérer l'état global avec **Redux**
 - Appliquer les **bonnes pratiques du Green IT**
 - Spécifier les routes API des transactions avec **Swagger**
 
