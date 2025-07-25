@@ -93,13 +93,6 @@ npm run dev:server
 Le backend est accessible à l’adresse :  
 http://localhost:3001
 
----
-
-## Lancer les tests
-
-```bash
-yarn test
-```
 
 ---
 
