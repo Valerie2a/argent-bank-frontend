@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserCircle, faCog, faSignOutAlt, faPowerOff } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../features/users/userSlice'
 import { clearTransactions } from '../features/transactions/transactionSlice'
