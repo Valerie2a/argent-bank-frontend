@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+const API = import.meta.env.VITE_API_URL;
+
 // Récupérer toutes les transactions via API
 export const fetchTransactions = createAsyncThunk(
   'transactions/fetchTransactions',
@@ -11,7 +13,7 @@ export const fetchTransactions = createAsyncThunk(
         return thunkAPI.rejectWithValue("Token manquant");
       }
 
-      const response = await fetch('http://localhost:3001/api/v1/transactions', {
+      const response = await fetch(`${API}/transactions`,{
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +46,7 @@ export const updateTransaction = createAsyncThunk(
         return thunkAPI.rejectWithValue("Token manquant");
       }
 
-      const response = await fetch(`http://localhost:3001/api/v1/transactions/${transactionId}`, {
+      const response = await fetch(`${API}/transactions/${transactionId}`, {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",

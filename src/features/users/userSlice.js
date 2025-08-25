@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+// 👇 Base API url from .env / .env.production
+const API = import.meta.env.VITE_API_URL || "http://localhost:3001/api/v1";
+
 // Thunk pour la connexion utilisateur
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async ({ email, password }, thunkAPI) => {
     try {
-      const response = await fetch("http://localhost:3001/api/v1/user/login", {
+      const response = await fetch(`${API}/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -18,7 +21,7 @@ export const loginUser = createAsyncThunk(
       }
 
       return data.body.token; // retour du token
-    } catch (error) {
+    } catch {
       return thunkAPI.rejectWithValue("Erreur réseau");
     }
   }
@@ -30,27 +33,25 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.token;
-      
       if (!token) {
         return thunkAPI.rejectWithValue("Token manquant");
       }
 
-      const response = await fetch("http://localhost:3001/api/v1/user/profile", {
-        method: "POST", 
+      const response = await fetch(`${API}/user/profile`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         return thunkAPI.rejectWithValue(data.message);
       }
 
       return data.body;
-    } catch (error) {
+    } catch {
       return thunkAPI.rejectWithValue("Erreur réseau");
     }
   }
@@ -62,28 +63,26 @@ export const updateUserProfile = createAsyncThunk(
   async ({ userName }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.token;
-      
       if (!token) {
         return thunkAPI.rejectWithValue("Token manquant");
       }
 
-      const response = await fetch("http://localhost:3001/api/v1/user/profile", {
+      const response = await fetch(`${API}/user/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ userName }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         return thunkAPI.rejectWithValue(data.message);
       }
 
       return data.body; // userName, firstName, lastName
-    } catch (error) {
+    } catch {
       return thunkAPI.rejectWithValue("Erreur réseau");
     }
   }
@@ -91,10 +90,10 @@ export const updateUserProfile = createAsyncThunk(
 
 // État initial - Token uniquement en mémoire (sécurité bancaire)
 const initialState = {
-  token: null, // Pas de persistance localStorage pour la sécurité
-  userName: '',
-  firstName: '',
-  lastName: '',
+  token: null,
+  userName: "",
+  firstName: "",
+  lastName: "",
   status: "idle",
   error: null,
   loading: false,
@@ -105,30 +104,27 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
-      // Reset complet de l'état utilisateur
       state.token = null;
-      state.userName = '';
-      state.firstName = '';
-      state.lastName = '';
+      state.userName = "";
+      state.firstName = "";
+      state.lastName = "";
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload; // Token uniquement en mémoire Redux
+        state.token = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      // fetchUserProfile
       .addCase(fetchUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -143,7 +139,6 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Update userProfile
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
